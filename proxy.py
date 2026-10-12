@@ -62,11 +62,14 @@ def modify_json_body(body: bytes, headers: list):
     )
     try:
         data = json.loads(decode_body(body, content_encoding))
-    except ValueError, OSError, zlib.error:
+    except (ValueError, OSError, zlib.error):
         return None
     if not isinstance(data, dict):
         return None
 
+    system = data.get("system")
+    if not isinstance(system, dict):
+        return None
     data["system"]["rid"] = "abc"
     new_body = json.dumps(data).encode("utf-8")
 
